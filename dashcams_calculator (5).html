@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashcams.com | Gross Margin Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:       #C41230;
+    --red-deep:  #8B0D22;
+    --red-glow:  rgba(196,18,48,0.18);
+    --orange:    #E8801A;
+    --bg:        #0A0A0C;
+    --bg2:       #111116;
+    --bg3:       #18181F;
+    --surface:   #1E1E27;
+    --surface2:  #252530;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --text:      #F2F2F4;
+    --text-muted:#8A8A9A;
+    --text-dim:  #5A5A6A;
+    --white:     #FFFFFF;
+    --green:     #22C55E;
+    --gold:      #F0B429;
+    --font-head: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+    --radius:    10px;
+    --radius-lg: 16px;
+    --shadow:    0 4px 24px rgba(0,0,0,0.5);
+    --shadow-red:0 0 40px rgba(196,18,48,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: relative;
+    z-index: 10;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-mark {
+    width: 38px;
+    height: 38px;
+    position: relative;
+  }
+
+  /* SVG camera lens logo approximation using CSS */
+  .logo-mark svg { width: 38px; height: 38px; }
+
+  .logo-text {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    line-height: 1;
+  }
+  .logo-text span { color: var(--red); }
+
+  .logo-sub {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red-glow);
+    border: 1px solid rgba(196,18,48,0.35);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .header-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.7); }
+  }
+
+  /* ── HERO STRIP ── */
+  .hero {
+    position: relative;
+    z-index: 5;
+    background: linear-gradient(135deg, var(--red-deep) 0%, var(--red) 50%, #D4182E 100%);
+    padding: 28px 32px;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: 'VIDEO WHEN IT COUNTS®';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.08);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: rgba(255,255,255,0.65);
+    font-weight: 600;
+    font-size: 0.55em;
+    display: block;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+
+  .hero-desc {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    font-weight: 400;
+    max-width: 480px;
+    line-height: 1.5;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 24px;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-num {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    position: relative;
+    z-index: 5;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 32px 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── PANEL BASE ── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 16px 22px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .panel-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--red-glow);
+    border: 1px solid rgba(196,18,48,0.4);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .panel-title {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .panel-body {
+    padding: 22px;
+  }
+
+  /* ── INPUT GROUPS ── */
+  .input-section {
+    margin-bottom: 22px;
+  }
+
+  .input-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .section-label {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .input-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .input-row.single {
+    grid-template-columns: 1fr;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .field-wrap {
+    position: relative;
+  }
+
+  .field-wrap .prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-dim);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .field-wrap input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    color: var(--white);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 20px;
+    padding: 12px 14px 12px 28px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .field-wrap input::-webkit-outer-spin-button,
+  .field-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .field-wrap input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(196,18,48,0.15);
+    background: var(--bg2);
+  }
+
+  .field-wrap input.no-prefix {
+    padding-left: 14px;
+  }
+
+  /* Slider */
+  .slider-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .slider-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .slider-val {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--white);
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 6px 14px;
+    min-width: 80px;
+    text-align: center;
+    transition: color 0.2s;
+  }
+
+  .slider-val span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 5px;
+    background: var(--bg3);
+    border-radius: 3px;
+    outline: none;
+    position: relative;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 0 3px rgba(196,18,48,0.25);
+    transition: box-shadow 0.2s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 0 6px rgba(196,18,48,0.3);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  /* ── RESULTS PANEL ── */
+  .results-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Hero annual profit */
+  .profit-hero {
+    background: linear-gradient(135deg, var(--red-deep) 0%, var(--red) 100%);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(196,18,48,0.5);
+    box-shadow: var(--shadow-red);
+  }
+
+  .profit-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .profit-hero-label {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 8px;
+  }
+
+  .profit-hero-num {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: clamp(48px, 7vw, 68px);
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .profit-hero-num.updated {
+    animation: numPop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes numPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.06); }
+    100% { transform: scale(1); }
+  }
+
+  .profit-hero-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  .profit-hero-monthly {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* Metric grid */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .metric:hover {
+    border-color: rgba(196,18,48,0.3);
+    box-shadow: 0 0 0 1px rgba(196,18,48,0.1);
+  }
+
+  .metric-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .metric-value {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--white);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .metric-value.green { color: var(--green); }
+  .metric-value.gold  { color: var(--gold); }
+  .metric-value.red   { color: #FF6B6B; }
+
+  .metric-sub {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  /* Breakeven badge */
+  .breakeven {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .breakeven-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+
+  .breakeven-label strong {
+    display: block;
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2px;
+  }
+
+  .breakeven-val {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  /* ROI bar */
+  .roi-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+  }
+
+  .roi-bar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .roi-bar-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .roi-bar-pct {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--green);
+  }
+
+  .roi-track {
+    height: 8px;
+    background: var(--bg3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .roi-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red) 0%, var(--orange) 100%);
+    border-radius: 4px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 4px;
+  }
+
+  /* ── BOTTOM STRIP ── */
+  .bottom-strip {
+    position: relative;
+    z-index: 5;
+    max-width: 1100px;
+    margin: 24px auto 0;
+    padding: 0 32px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* ── VIDEO PANEL ── */
+  .video-panel {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .video-thumb {
+    position: relative;
+    cursor: pointer;
+    background: #000;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .video-thumb-bg {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a0008 0%, #2d0010 40%, var(--red-deep) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .video-title-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    padding: 20px 16px 14px;
+  }
+
+  .video-title-text {
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .video-title-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 3px;
+  }
+
+  .play-btn {
+    width: 64px;
+    height: 64px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 10px rgba(196,18,48,0.2), 0 0 0 20px rgba(196,18,48,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    z-index: 2;
+  }
+
+  .video-thumb:hover .play-btn {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 12px rgba(196,18,48,0.25), 0 0 0 24px rgba(196,18,48,0.1);
+  }
+
+  .play-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: white;
+    margin-left: 4px;
+  }
+
+  .video-panel-body {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .video-panel-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .video-panel-text strong {
+    display: block;
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .btn-watch {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--red);
+    color: var(--white);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-watch:hover {
+    background: var(--red-deep);
+    transform: translateY(-1px);
+  }
+
+  .btn-watch svg {
+    width: 14px;
+    height: 14px;
+    fill: white;
+  }
+
+  /* ── CTA PANEL ── */
+  .cta-panel {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .cta-headline {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: clamp(22px, 3vw, 30px);
+    line-height: 1.1;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .cta-headline em {
+    font-style: normal;
+    color: var(--red);
+  }
+
+  .cta-body {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .cta-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cta-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .cta-points li::before {
+    content: '▸';
+    color: var(--red);
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .cta-points li strong {
+    color: var(--text);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--red);
+    color: var(--white);
+    font-family: var(--font-head);
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(196,18,48,0.35);
+  }
+
+  .btn-primary:hover {
+    background: var(--red-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(196,18,48,0.45);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s;
+  }
+
+  .btn-secondary:hover {
+    border-color: rgba(255,255,255,0.25);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+
+  /* ── FOOTNOTE ── */
+  .footnote {
+    position: relative;
+    z-index: 5;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .footnote-text {
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    max-width: 600px;
+  }
+
+  .footnote-brand {
+    font-family: var(--font-head);
+    font-weight: 900;
+    font-size: 16px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 780px) {
+    .header { padding: 0 16px; }
+    .hero { padding: 20px 16px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-stats { display: none; }
+    .main { grid-template-columns: 1fr; padding: 20px 16px 0; }
+    .bottom-strip { grid-template-columns: 1fr; padding: 0 16px 24px; margin-top: 16px; }
+    .input-row { grid-template-columns: 1fr; }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .footnote { padding: 16px 16px 24px; flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── ANIMATION ON LOAD ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up:nth-child(1) { animation-delay: 0.05s; }
+  .fade-up:nth-child(2) { animation-delay: 0.12s; }
+  .fade-up:nth-child(3) { animation-delay: 0.20s; }
+  .fade-up:nth-child(4) { animation-delay: 0.28s; }
+
+  /* Tooltip */
+  [data-tip] {
+    position: relative;
+    cursor: help;
+  }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-family: var(--font-body);
+    font-weight: 400;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 100;
+    border: 1px solid var(--border2);
+  }
+  [data-tip]:hover::after { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">
+    <svg class="logo-mark" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="18" stroke="#C41230" stroke-width="2"/>
+      <circle cx="19" cy="19" r="10" fill="#C41230"/>
+      <circle cx="19" cy="19" r="5" fill="#1a0008"/>
+      <circle cx="21" cy="17" r="2" fill="white" opacity="0.9"/>
+      <path d="M4 19 Q10 8 19 4" stroke="#E8801A" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+      <path d="M34 19 Q28 30 19 34" stroke="#E8801A" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+    </svg>
+    <div>
+      <div class="logo-text">DASHCAMS<span>.</span>COM</div>
+      <div class="logo-sub">Powered by Safety F1rst®</div>
+    </div>
+  </div>
+  <div class="header-badge">Dealer Profit Tool</div>
+</header>
+
+<!-- HERO STRIP -->
+<div class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-title">
+        <em>Gross Margin Calculator</em>
+        What This Program<br>Drives to Your Bottom Line
+      </div>
+      <p class="hero-desc">Adjust the inputs below to your dealership's numbers. Every figure updates instantly.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">70%+</div>
+        <div class="hero-stat-label">Sell-Through<br>Top Partners</div>
+      </div>
+      <div class="hero-stat" style="border-left:1px solid rgba(255,255,255,0.2);padding-left:24px;">
+        <div class="hero-stat-num">$199</div>
+        <div class="hero-stat-label">Kit Cost<br>to Dealer</div>
+      </div>
+      <div class="hero-stat" style="border-left:1px solid rgba(255,255,255,0.2);padding-left:24px;">
+        <div class="hero-stat-num">4K</div>
+        <div class="hero-stat-label">Sony-Powered<br>Camera</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CALCULATOR -->
+<div class="main">
+
+  <!-- LEFT: INPUTS -->
+  <div class="panel fade-up">
+    <div class="panel-header">
+      <div class="panel-icon">⚙</div>
+      <div class="panel-title">Your Dealership Inputs</div>
+    </div>
+    <div class="panel-body">
+
+      <div class="input-section">
+        <div class="section-label">Volume &amp; Program</div>
+        <div class="input-row">
+          <div class="field" data-tip="New vehicles sold per month">
+            <label>Monthly New Car Sales</label>
+            <div class="field-wrap">
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="monthlySales" value="100" min="1" max="1000" class="no-prefix">
+            </div>
+          </div>
+          <div class="field" data-tip="Your cost per complete Dashcam kit">
+            <label>Kit Cost to Dealer</label>
+            <div class="field-wrap">
+              <span class="prefix">$</span>
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="kitCost" value="199" min="1">
+            </div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <label>Estimated Sell-Through Rate</label>
+          <div class="slider-wrap">
+            <div class="slider-top">
+              <span style="font-size:11px;color:var(--text-dim);">0%</span>
+              <div class="slider-val" id="penetrationDisplay">65<span>%</span></div>
+              <span style="font-size:11px;color:var(--text-dim);">100%</span>
+            </div>
+            <input type="range" id="penetration" min="0" max="100" value="65">
+          </div>
+        </div>
+      </div>
+
+      <div class="input-section">
+        <div class="section-label">Revenue</div>
+        <div class="input-row">
+          <div class="field" data-tip="What you charge the customer for installation">
+            <label>Retail Install Price</label>
+            <div class="field-wrap">
+              <span class="prefix">$</span>
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="retailPrice" value="649" min="1">
+            </div>
+          </div>
+          <div class="field" data-tip="Commission paid to your sales team per unit sold">
+            <label>Sales Commission / Unit</label>
+            <div class="field-wrap">
+              <span class="prefix">$</span>
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="commission" value="50" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-section">
+        <div class="section-label">Departmental Profit Per Unit</div>
+        <div class="input-row">
+          <div class="field" data-tip="Parts department markup earned per kit installed">
+            <label>Parts Markup / Unit</label>
+            <div class="field-wrap">
+              <span class="prefix">$</span>
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="partsMarkup" value="35" min="0">
+            </div>
+          </div>
+          <div class="field" data-tip="Service labor profit earned per installation">
+            <label>Service Labor / Unit</label>
+            <div class="field-wrap">
+              <span class="prefix">$</span>
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="serviceLabor" value="65" min="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-section">
+        <div class="section-label">One-Time Launch Fee</div>
+        <div class="input-row single">
+          <div class="field" data-tip="Covers installation labor up to 96 kits, service training, sales training, and all POP materials">
+            <label>Launch Fee (One-Time)</label>
+            <div class="field-wrap">
+              <span class="prefix">$</span>
+              <input type="text" inputmode="decimal" pattern="[0-9.]*" id="launchFee" value="1500" min="0">
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-dim);line-height:1.5;margin-top:-4px;">
+          Includes installation labor for up to 96 kits, service technician training, sales team training, SFH Install App access, and all POP marketing materials.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: RESULTS -->
+  <div class="results-panel">
+
+    <!-- Annual profit hero -->
+    <div class="profit-hero fade-up">
+      <div class="profit-hero-label">Projected Annual Dealership Profit</div>
+      <div class="profit-hero-num" id="annualProfit">$0</div>
+      <div class="profit-hero-sub">Gross profit after kit cost, commission, and launch fee</div>
+      <div class="profit-hero-monthly">
+        <span>↗</span>
+        <span id="monthlyProfit">$0</span> per month
+      </div>
+    </div>
+
+    <!-- Metric grid -->
+    <div class="metric-grid fade-up">
+      <div class="metric" data-tip="Units expected to sell per month at your penetration rate">
+        <div class="metric-label">Units Sold / Month</div>
+        <div class="metric-value" id="unitsSold">0</div>
+        <div class="metric-sub">at <span id="penetrationPct">65</span>% sell-through</div>
+      </div>
+      <div class="metric" data-tip="Total revenue from dashcam sales per month">
+        <div class="metric-label">Monthly Revenue</div>
+        <div class="metric-value green" id="monthlyRevenue">$0</div>
+        <div class="metric-sub">retail price × units</div>
+      </div>
+      <div class="metric" data-tip="Parts department additional gross per month">
+        <div class="metric-label">Parts Dept. / Month</div>
+        <div class="metric-value gold" id="partsMonthly">$0</div>
+        <div class="metric-sub" id="partsAnnual">$0 annually</div>
+      </div>
+      <div class="metric" data-tip="Service department labor gross per month">
+        <div class="metric-label">Service Dept. / Month</div>
+        <div class="metric-value gold" id="serviceMonthly">$0</div>
+        <div class="metric-sub" id="serviceAnnual">$0 annually</div>
+      </div>
+    </div>
+
+    <!-- Breakeven -->
+    <div class="breakeven fade-up">
+      <div class="breakeven-label">
+        <strong>Launch Fee Breakeven</strong>
+        Units needed to recover the $<span id="launchFeeDisplay">1,500</span> investment
+      </div>
+      <div class="breakeven-val" id="breakevenUnits">0 units</div>
+    </div>
+
+    <!-- ROI Bar -->
+    <div class="roi-bar-wrap fade-up">
+      <div class="roi-bar-top">
+        <div class="roi-bar-label">Return on Launch Investment</div>
+        <div class="roi-bar-pct" id="roiPct">0%</div>
+      </div>
+      <div class="roi-track">
+        <div class="roi-fill" id="roiFill" style="width:0%"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTTOM STRIP -->
+<div class="bottom-strip">
+
+  <!-- VIDEO -->
+  <div class="video-panel fade-up">
+    <a href="https://vimeo.com/913841046" target="_blank" rel="noopener" class="video-thumb" aria-label="Watch Dashcams.com product video">
+      <div class="video-thumb-bg">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+        <div class="video-title-overlay">
+          <div class="video-title-text">Dashcams Protect® — The Most Wanted Car Accessory</div>
+          <div class="video-title-sub">Video When It Counts® &nbsp;|&nbsp; Powered by Safety F1rst®</div>
+        </div>
+      </div>
+    </a>
+    <div class="video-panel-body">
+      <div class="video-panel-text">
+        <strong>See the Product in Action</strong>
+        Sony 4K · OBDII Plug-and-Play · Parking Mode · 50-State Legal
+      </div>
+      <a href="https://vimeo.com/913841046" target="_blank" rel="noopener" class="btn-watch">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Watch Now
+      </a>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-panel fade-up">
+    <div>
+      <div class="cta-headline">Ready to Lock In<br>Your <em>Market?</em></div>
+    </div>
+    <ul class="cta-points">
+      <li><strong>No long-term commitment</strong> required to launch</li>
+      <li><strong>$1,500 one-time fee</strong> covers everything from installation to marketing materials</li>
+      <li><strong>70%+ sell-through</strong> achieved by our top dealer partners</li>
+      <li>Dashcam removed and <strong>reused in under 5 minutes</strong> if customer declines</li>
+    </ul>
+    <div class="cta-buttons">
+      <a href="https://www.dashcams.com" target="_blank" rel="noopener" class="btn-primary">
+        Get Started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M5 12h14M12 5l7 7-7 7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </a>
+      <a href="https://www.dashcams.com" target="_blank" rel="noopener" class="btn-secondary">Learn More</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTNOTE -->
+<div class="footnote">
+  <div class="footnote-text">
+    ¹Image sensing by SONY®. SONY® is a registered trademark of Sony Corporation, which is not affiliated with Safety F1rst Holdings, LLC, Joseph & Roberts, LLC, or Dashcams.com™. DASHCAMS PROTECT®, VIDEO WHEN IT COUNTS®, and DASHCAM TECHNOLOGY SIMPLIFIED® are trademarks of Joseph & Roberts, LLC. Joseph &amp; Roberts, LLC OBDII power cable is covered by patent US 12,246,665 B2. © 2022 All Rights Reserved. Calculator projections are estimates only and do not guarantee results. Actual performance will vary by dealership.
+  </div>
+  <div class="footnote-brand">DASHCAMS.COM™</div>
+</div>
+
+<script>
+  // ── DEFAULTS (used as fallback on iOS Safari which sometimes misreads HTML value attributes)
+  var DEFAULTS = {
+    monthlySales: 100,
+    kitCost:      199,
+    penetration:  65,
+    retailPrice:  649,
+    commission:   50,
+    partsMarkup:  35,
+    serviceLabor: 65,
+    launchFee:    1500
+  };
+
+  // ── FORMAT HELPERS ──────────────────────────────────────────────────────────
+  function fmt(n) {
+    if (isNaN(n) || !isFinite(n)) return '$0';
+    return '$' + Math.round(n).toLocaleString('en-US');
+  }
+
+  function fmtRaw(n) {
+    if (isNaN(n) || !isFinite(n)) return '0';
+    return Math.round(n).toLocaleString('en-US');
+  }
+
+  // ── SAFE VALUE READER ───────────────────────────────────────────────────────
+  // Reads the input value; falls back to hardcoded default if empty or NaN.
+  // Works on iOS Safari, Android Chrome, and desktop.
+  function gv(id) {
+    var el = document.getElementById(id);
+    if (!el) return DEFAULTS[id] || 0;
+    var raw = el.value;
+    // Strip anything that isn't a digit or decimal point
+    raw = raw.replace(/[^0-9.]/g, '');
+    var v = parseFloat(raw);
+    if (isNaN(v) || raw === '') v = DEFAULTS[id] || 0;
+    return Math.max(0, v);
+  }
+
+  // ── SET OUTPUT ──────────────────────────────────────────────────────────────
+  // Simple direct DOM write — no animation classes that can fail on Android
+  function setOut(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  // ── CALCULATE ───────────────────────────────────────────────────────────────
+  function calc() {
+    var sales      = gv('monthlySales');
+    var kitCost    = gv('kitCost');
+    var pct        = Math.min(100, Math.max(0, gv('penetration') ||
+                     parseFloat(document.getElementById('penetration').value) || 65));
+    var retail     = gv('retailPrice');
+    var commission = gv('commission');
+    var partsMkup  = gv('partsMarkup');
+    var svcLabor   = gv('serviceLabor');
+    var launchFee  = gv('launchFee');
+
+    var unitsMo        = sales * (pct / 100);
+    var revenueMo      = unitsMo * retail;
+    var kitCostMo      = unitsMo * kitCost;
+    var commissionMo   = unitsMo * commission;
+    var partsMo        = unitsMo * partsMkup;
+    var serviceMo      = unitsMo * svcLabor;
+    var baseGrossMo    = revenueMo - kitCostMo - commissionMo;
+    var totalMo        = baseGrossMo + partsMo + serviceMo;
+    var annualRaw      = totalMo * 12;
+    var annualNet      = annualRaw - launchFee;
+    var profitPerUnit  = retail - kitCost - commission + partsMkup + svcLabor;
+    var breakeven      = profitPerUnit > 0 ? Math.ceil(launchFee / profitPerUnit) : 0;
+    var roi            = launchFee > 0 ? Math.max(0, (annualNet / launchFee) * 100) : 0;
+    var roiCapped      = Math.min(roi, 2000);
+
+    // Annual profit hero
+    var apEl = document.getElementById('annualProfit');
+    if (apEl) {
+      apEl.textContent = fmt(annualNet);
+      apEl.style.color = annualNet < 0 ? '#FF6B6B' : 'white';
+    }
+
+    setOut('monthlyProfit',   fmt(totalMo));
+    setOut('unitsSold',       Math.round(unitsMo).toLocaleString());
+    setOut('penetrationPct',  Math.round(pct).toString());
+    setOut('monthlyRevenue',  fmt(revenueMo));
+    setOut('partsMonthly',    fmt(partsMo));
+    setOut('partsAnnual',     fmt(partsMo * 12) + ' annually');
+    setOut('serviceMonthly',  fmt(serviceMo));
+    setOut('serviceAnnual',   fmt(serviceMo * 12) + ' annually');
+    setOut('breakevenUnits',  breakeven + (breakeven === 1 ? ' unit' : ' units'));
+    setOut('launchFeeDisplay',Math.round(launchFee).toLocaleString());
+
+    var roiEl = document.getElementById('roiPct');
+    if (roiEl) roiEl.textContent = roi > 9999 ? '>9,999%' : Math.round(roi).toLocaleString() + '%';
+
+    var roiFill = document.getElementById('roiFill');
+    if (roiFill) roiFill.style.width = Math.min(100, (roiCapped / 2000) * 100) + '%';
+
+    // Slider label
+    var penDisp = document.getElementById('penetrationDisplay');
+    if (penDisp) penDisp.innerHTML = Math.round(pct) + '<span>%</span>';
+  }
+
+  // ── SLIDER ──────────────────────────────────────────────────────────────────
+  var sliderEl = document.getElementById('penetration');
+  if (sliderEl) {
+    sliderEl.addEventListener('input', function() {
+      DEFAULTS.penetration = parseFloat(this.value) || 65;
+      calc();
+    });
+    sliderEl.addEventListener('change', function() {
+      DEFAULTS.penetration = parseFloat(this.value) || 65;
+      calc();
+    });
+  }
+
+  // ── TEXT INPUTS ─────────────────────────────────────────────────────────────
+  ['monthlySales','kitCost','retailPrice','commission','partsMarkup','serviceLabor','launchFee'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    function update() {
+      var raw = el.value.replace(/[^0-9.]/g, '');
+      var v = parseFloat(raw);
+      if (!isNaN(v)) DEFAULTS[id] = v;
+      calc();
+    }
+    el.addEventListener('input',  update);
+    el.addEventListener('change', update);
+    el.addEventListener('blur',   update);
+    // iOS Safari sometimes needs keyup too
+    el.addEventListener('keyup',  update);
+  });
+
+  // ── INIT ────────────────────────────────────────────────────────────────────
+  // Three-stage init to cover all mobile edge cases:
+  // 1. Immediate call (desktop)
+  // 2. DOMContentLoaded (most mobile browsers)
+  // 3. window.load + 100ms delay (iOS Safari last resort)
+  calc();
+  document.addEventListener('DOMContentLoaded', calc);
+  window.addEventListener('load', function() {
+    setTimeout(calc, 100);
+    setTimeout(calc, 500); // extra safety pass for slow iOS devices
+  });
+</script>
+</body>
+</html>
