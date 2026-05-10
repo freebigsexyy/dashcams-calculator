@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dashcams.com — Dealer Program</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{--red:#B91C1C;--red-d:#991B1B;--text:#111;--muted:#555;--light:#999;--bg:#F8F7F5;--white:#fff;--border:#E5E3DF;--green:#166534;}
+html,body{background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;color:var(--text);-webkit-font-smoothing:antialiased;}
+
+/* TOP BAR */
+.bar{background:var(--white);border-bottom:1px solid var(--border);padding:13px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.logo{display:flex;align-items:center;gap:7px;}
+.logo-txt{font-size:14px;font-weight:700;letter-spacing:0.03em;}
+.logo-txt span{color:var(--red);}
+.bar-tag{font-size:10px;color:var(--light);letter-spacing:0.08em;text-transform:uppercase;}
+
+/* SECTIONS */
+.sec{background:var(--white);padding:22px 18px 18px;border-bottom:1px solid var(--border);margin-top:8px;}
+.sec:first-of-type{margin-top:0;}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--red);margin-bottom:8px;}
+
+/* HERO */
+.hero{background:var(--white);padding:24px 18px 20px;border-bottom:1px solid var(--border);}
+.hero-hl{font-size:24px;font-weight:700;line-height:1.15;color:var(--text);margin-bottom:10px;}
+.hero-hl .red{color:var(--red);}
+.hero-sub{font-size:14px;color:var(--muted);line-height:1.6;}
+
+/* PROFIT HERO */
+.profit-lbl{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--light);margin-bottom:5px;}
+.profit-num{font-size:52px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-0.02em;margin-bottom:6px;}
+.profit-sub{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:14px;}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.metric{background:var(--bg);border-radius:8px;padding:12px 13px;}
+.metric-lbl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);margin-bottom:3px;}
+.metric-val{font-size:20px;font-weight:700;color:var(--text);}
+
+/* CALCULATOR */
+.calc-intro{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:16px;}
+.inp-grp{margin-bottom:13px;}
+.inp-lbl{display:block;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.inp-wrap{position:relative;}
+.inp-pfx{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none;}
+.calc-inp{width:100%;padding:12px 12px 12px 26px;border:1.5px solid var(--border);border-radius:9px;font-size:16px;font-weight:600;color:var(--text);background:var(--bg);outline:none;-webkit-appearance:none;transition:border-color 0.15s;}
+.calc-inp.np{padding-left:12px;}
+.calc-inp:focus{border-color:var(--red);background:var(--white);}
+.slider-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.slider-row span:first-child{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);}
+.slider-pct{font-size:16px;font-weight:700;color:var(--red);}
+input[type="range"]{width:100%;-webkit-appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;margin-bottom:14px;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;background:var(--red);border-radius:50%;cursor:pointer;border:2.5px solid white;box-shadow:0 1px 5px rgba(0,0,0,0.18);}
+.inp-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+
+/* CALC RESULTS */
+.results{background:var(--text);border-radius:10px;padding:18px;margin-top:14px;}
+.res-annual-lbl{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:4px;}
+.res-annual{font-size:40px;font-weight:700;color:white;line-height:1;letter-spacing:-0.02em;margin-bottom:5px;}
+.res-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:14px;}
+.res-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.res-lbl{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:2px;}
+.res-val{font-size:16px;font-weight:700;color:rgba(255,255,255,0.88);}
+.roi-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);}
+.roi-lbl{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;}
+.roi-val{font-size:15px;font-weight:700;color:#4ADE80;}
+
+/* INSTALL PROOF */
+.install-tbl{width:100%;border-collapse:collapse;}
+.install-tbl tr{border-bottom:1px solid var(--border);}
+.install-tbl tr:last-child{border-bottom:none;}
+.install-tbl td{padding:9px 0;font-size:14px;vertical-align:middle;}
+.it-lbl{color:var(--muted);}
+.it-val{text-align:right;font-weight:700;color:var(--text);}
+.it-val.green{color:var(--green);}
+.testimonial{margin-top:13px;padding:11px 13px;background:var(--bg);border-radius:8px;border-left:3px solid var(--border);}
+.t-quote{font-style:italic;font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:5px;}
+.t-attr{font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--light);}
+
+/* DEMAND */
+.demand-sec{background:var(--white);padding:26px 18px 22px;border-bottom:1px solid var(--border);margin-top:8px;text-align:center;}
+.demand-num{font-size:64px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-0.03em;margin-bottom:10px;}
+.demand-desc{font-size:15px;color:var(--muted);line-height:1.6;max-width:280px;margin:0 auto 8px;}
+.demand-src{font-size:12px;color:var(--light);font-style:italic;}
+
+/* TERMS */
+.terms-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.term{background:var(--bg);border-radius:8px;padding:11px 13px;}
+.term-lbl{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--light);margin-bottom:3px;}
+.term-val{font-size:14px;font-weight:700;color:var(--text);}
+
+/* CTA */
+.cta-sec{background:var(--white);padding:28px 18px;border-bottom:1px solid var(--border);margin-top:8px;text-align:center;}
+.cta-hl{font-size:22px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.cta-sub{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.5;}
+.call-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--red);color:white;text-decoration:none;font-size:18px;font-weight:700;padding:17px 24px;border-radius:12px;margin-bottom:10px;transition:background 0.15s;}
+.call-btn:active{background:var(--red-d);}
+.cta-contact{font-size:13px;color:var(--muted);}
+
+/* FOOTER */
+.footer{padding:20px 18px;text-align:center;background:var(--bg);}
+.footer-logo{font-size:13px;font-weight:700;letter-spacing:0.04em;color:var(--muted);margin-bottom:3px;}
+.footer-logo span{color:var(--red);}
+.footer-tag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:12px;}
+.footer-legal{font-size:10px;color:var(--light);line-height:1.6;}
+
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="bar">
+  <div class="logo">
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="#B91C1C" stroke-width="1.6"/><circle cx="11" cy="11" r="6" fill="#B91C1C"/><circle cx="11" cy="11" r="2.5" fill="#111"/><circle cx="12.4" cy="9.6" r="1.1" fill="white" opacity="0.9"/></svg>
+    <div class="logo-txt">DASHCAMS<span>.</span>COM</div>
+  </div>
+  <div class="bar-tag">Dealer Program</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="eyebrow" id="hero-eyebrow">Dealer Program Overview</div>
+  <div class="hero-hl" id="hero-hl">The dashcam your customers are already asking <span class="red">your competitor</span> to install.</div>
+  <div class="hero-sub">Dashcams.com installs Sony&#174; 4K dashcams professionally through authorized dealerships. Dealers set their own retail price, keep the margin, and pay nothing until they order a kit.</div>
+</div>
+
+<!-- PROFIT HERO -->
+<div class="sec">
+  <div class="profit-lbl">Projected Annual Profit &mdash; <span id="dealer-display">Your Store</span></div>
+  <div class="profit-num" id="hero-annual">$0</div>
+  <div class="profit-sub">After $199 kit cost &nbsp;&#183;&nbsp; After sales commission &nbsp;&#183;&nbsp; After $1,500 one-time launch fee</div>
+  <div class="metrics">
+    <div class="metric"><div class="metric-lbl">Per Month</div><div class="metric-val" id="hero-monthly">$0</div></div>
+    <div class="metric"><div class="metric-lbl">Launch Fee Recovered</div><div class="metric-val" id="hero-be">0 units</div></div>
+  </div>
+</div>
+
+<!-- CALCULATOR -->
+<div class="sec">
+  <div class="eyebrow">Run Your Own Numbers</div>
+  <div class="calc-intro">These are pre-filled for your store. Adjust any input and your profit updates instantly.</div>
+
+  <div class="inp-row">
+    <div class="inp-grp">
+      <label class="inp-lbl">Monthly Car Sales</label>
+      <div class="inp-wrap"><input type="text" inputmode="decimal" id="lp_sales" class="calc-inp np" value="100" oninput="lpCalc()" onchange="lpCalc()" onblur="lpCalc()"></div>
+    </div>
+    <div class="inp-grp">
+      <label class="inp-lbl">Retail Install Price</label>
+      <div class="inp-wrap"><span class="inp-pfx">$</span><input type="text" inputmode="decimal" id="lp_retail" class="calc-inp" value="649" oninput="lpCalc()" onchange="lpCalc()" onblur="lpCalc()"></div>
+    </div>
+  </div>
+
+  <div class="slider-row"><span>Sell-Through Rate</span><span class="slider-pct" id="lp_pct_disp">65%</span></div>
+  <input type="range" id="lp_pct" min="0" max="100" value="65" oninput="onSlider(this)">
+
+  <div class="inp-row">
+    <div class="inp-grp">
+      <label class="inp-lbl">Sales Commission</label>
+      <div class="inp-wrap"><span class="inp-pfx">$</span><input type="text" inputmode="decimal" id="lp_comm" class="calc-inp" value="50" oninput="lpCalc()" onchange="lpCalc()" onblur="lpCalc()"></div>
+    </div>
+    <div class="inp-grp">
+      <label class="inp-lbl">Parts Markup</label>
+      <div class="inp-wrap"><span class="inp-pfx">$</span><input type="text" inputmode="decimal" id="lp_parts" class="calc-inp" value="35" oninput="lpCalc()" onchange="lpCalc()" onblur="lpCalc()"></div>
+    </div>
+  </div>
+
+  <div class="inp-row">
+    <div class="inp-grp">
+      <label class="inp-lbl">Service Labor</label>
+      <div class="inp-wrap"><span class="inp-pfx">$</span><input type="text" inputmode="decimal" id="lp_svc" class="calc-inp" value="65" oninput="lpCalc()" onchange="lpCalc()" onblur="lpCalc()"></div>
+    </div>
+    <div class="inp-grp">
+      <label class="inp-lbl">Launch Fee</label>
+      <div class="inp-wrap"><span class="inp-pfx">$</span><input type="text" inputmode="decimal" id="lp_launch" class="calc-inp" value="1500" oninput="lpCalc()" onchange="lpCalc()" onblur="lpCalc()"></div>
+    </div>
+  </div>
+
+  <div class="results">
+    <div class="res-annual-lbl">Projected Annual Profit</div>
+    <div class="res-annual" id="lp_annual">$0</div>
+    <div class="res-sub">After all costs and launch fee</div>
+    <div class="res-grid">
+      <div><div class="res-lbl">Per Month</div><div class="res-val" id="lp_monthly">$0</div></div>
+      <div><div class="res-lbl">Gross / Unit</div><div class="res-val" id="lp_gpu">$0</div></div>
+      <div><div class="res-lbl">Monthly Revenue</div><div class="res-val" id="lp_revenue">$0</div></div>
+      <div><div class="res-lbl">Fee Recovered</div><div class="res-val" id="lp_be">0 units</div></div>
+    </div>
+    <div class="roi-row">
+      <div class="roi-lbl">Return on $1,500 Launch Fee</div>
+      <div class="roi-val" id="lp_roi">0%</div>
+    </div>
+  </div>
+</div>
+
+<!-- INSTALL PROOF — hidden when no data -->
+<div class="sec hidden" id="install-sec">
+  <div class="eyebrow">Already Installed at Your Store</div>
+  <table class="install-tbl">
+    <tr><td class="it-lbl">Customer</td><td class="it-val" id="ip-cust"></td></tr>
+    <tr><td class="it-lbl">Vehicle</td><td class="it-val" id="ip-veh"></td></tr>
+    <tr><td class="it-lbl">Install Time</td><td class="it-val" id="ip-time"></td></tr>
+    <tr><td class="it-lbl">Kit Cost</td><td class="it-val">$199</td></tr>
+    <tr><td class="it-lbl">Retail Charged</td><td class="it-val" id="ip-rc"></td></tr>
+    <tr><td class="it-lbl">Your Gross</td><td class="it-val green" id="ip-gross"></td></tr>
+  </table>
+  <div class="testimonial hidden" id="test-block">
+    <div class="t-quote" id="ip-test"></div>
+    <div class="t-attr" id="ip-attr"></div>
+  </div>
+</div>
+
+<!-- DEMAND STAT -->
+<div class="demand-sec">
+  <div class="eyebrow" style="text-align:center;">Consumer Demand</div>
+  <div class="demand-num">1 in 3</div>
+  <div class="demand-desc">drivers without a dashcam plans to buy one within the next year. Most will buy it wherever their dealer makes it easy.</div>
+  <div class="demand-src">Source: AutoInsurance.com consumer survey</div>
+</div>
+
+<!-- PROGRAM TERMS -->
+<div class="sec" style="margin-top:8px;">
+  <div class="eyebrow">Program Terms</div>
+  <div class="terms-grid">
+    <div class="term"><div class="term-lbl">Kit Cost</div><div class="term-val">$199 + shipping</div></div>
+    <div class="term"><div class="term-lbl">Launch Fee</div><div class="term-val">$1,500 one-time</div></div>
+    <div class="term"><div class="term-lbl">Suggested Retail</div><div class="term-val">$549 &#8212; $799</div></div>
+    <div class="term"><div class="term-lbl">Warranty</div><div class="term-val">1 Year</div></div>
+    <div class="term"><div class="term-lbl">Commitment</div><div class="term-val">None required</div></div>
+    <div class="term"><div class="term-lbl">Camera</div><div class="term-val">Sony&#174; 4K</div></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-sec">
+  <div class="cta-hl" id="cta-hl">Ready to lock in your market?</div>
+  <div class="cta-sub" id="cta-sub">One call is all it takes to get your store set up.</div>
+  <a class="call-btn" id="call-btn" href="tel:+10000000000">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+    Call Now
+  </a>
+  <div class="cta-contact" id="cta-contact"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-logo">DASHCAMS<span>.</span>COM</div>
+  <div class="footer-tag">Video When It Counts&#174;</div>
+  <div class="footer-legal">DASHCAMS PROTECT&#174;, VIDEO WHEN IT COUNTS&#174;, and DASHCAM TECHNOLOGY SIMPLIFIED&#174; are trademarks of Joseph &amp; Roberts, LLC. SAFETY F1RST&#174; is a trademark of Safety F1rst Holdings, LLC. Image sensing by SONY&#174;. SONY&#174; is a registered trademark of Sony Corporation. Patent US 12,246,665 B2. &#169; 2022 All Rights Reserved. Profit projections are estimates only.</div>
+</div>
+
+<script>
+function gp(n,d){try{var p=new URLSearchParams(window.location.search);var v=p.get(n);return v?decodeURIComponent(v):d;}catch(e){return d;}}
+function gn(v,d){var n=parseFloat(String(v).replace(/[^0-9.]/g,''));return isNaN(n)?d:n;}
+function fmt(n){return '$'+Math.round(n).toLocaleString('en-US');}
+
+// Load params
+var P={
+  dealer:  gp('dealer',''), gm: gp('gm',''), nsd: gp('nsd',''), phone: gp('phone',''),
+  sales:   gn(gp('sales','100'),100), retail: gn(gp('retail','649'),649),
+  pct:     gn(gp('pct','65'),65), comm: gn(gp('comm','50'),50),
+  parts:   gn(gp('parts','35'),35), svc: gn(gp('svc','65'),65),
+  launch:  gn(gp('launch','1500'),1500),
+  customer:gp('customer',''), vehicle:gp('vehicle',''), time:gp('time',''),
+  rc:      gp('rc',''), gross:gp('gross',''), test:gp('test',''),
+};
+
+// Populate static content
+if(P.dealer) document.getElementById('dealer-display').textContent = P.dealer;
+
+// Hero headline — Option A (with GM name) or Option B (dealer only)
+var hl = document.getElementById('hero-hl');
+if(P.gm && P.dealer){
+  hl.innerHTML = 'Hi '+P.gm+' &#8212; here is what Dashcams.com pays <span class="red">'+P.dealer+'</span>.';
+} else if(P.dealer){
+  hl.innerHTML = 'Here is what Dashcams.com pays <span class="red">'+P.dealer+'</span>.';
+}
+
+// Eyebrow with dealer
+if(P.dealer) document.getElementById('hero-eyebrow').textContent = P.dealer+' &#8212; Dealer Program Overview';
+
+// Install proof
+if(P.customer && P.vehicle){
+  document.getElementById('install-sec').classList.remove('hidden');
+  document.getElementById('ip-cust').textContent  = P.customer;
+  document.getElementById('ip-veh').textContent   = P.vehicle;
+  document.getElementById('ip-time').textContent  = P.time ? P.time+' minutes' : '&#8212;';
+  document.getElementById('ip-rc').textContent    = P.rc || '&#8212;';
+  document.getElementById('ip-gross').textContent = P.gross || '&#8212;';
+  if(P.test){
+    document.getElementById('test-block').classList.remove('hidden');
+    document.getElementById('ip-test').textContent = '\u201C'+P.test+'\u201D';
+    document.getElementById('ip-attr').textContent = P.customer+(P.vehicle?' \u00B7 '+P.vehicle:'');
+  }
+}
+
+// CTA — tap to call
+if(P.phone){
+  var clean = P.phone.replace(/[^0-9+]/g,'');
+  if(clean && !clean.startsWith('+')) clean = '+1'+clean;
+  var btn = document.getElementById('call-btn');
+  btn.href = 'tel:'+clean;
+  var first = P.nsd ? P.nsd.split(' ')[0] : null;
+  btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> Call '+(first||'Now');
+}
+if(P.nsd||P.phone){
+  var cc = [];
+  if(P.nsd) cc.push(P.nsd);
+  if(P.phone) cc.push(P.phone);
+  document.getElementById('cta-contact').textContent = cc.join(' \u00B7 ');
+}
+if(P.gm){
+  document.getElementById('cta-hl').textContent = P.gm+', ready to lock in your market?';
+  document.getElementById('cta-sub').textContent = 'One call is all it takes. I can have your store set up within days.';
+}
+
+// Pre-fill calculator
+document.getElementById('lp_sales').value  = P.sales;
+document.getElementById('lp_retail').value = P.retail;
+document.getElementById('lp_pct').value    = P.pct;
+document.getElementById('lp_comm').value   = P.comm;
+document.getElementById('lp_parts').value  = P.parts;
+document.getElementById('lp_svc').value    = P.svc;
+document.getElementById('lp_launch').value = P.launch;
+document.getElementById('lp_pct_disp').textContent = Math.round(P.pct)+'%';
+
+// Calculator
+function lpGN(id,d){var el=document.getElementById(id);if(!el)return d;var n=parseFloat(el.value.replace(/[^0-9.]/g,''));return isNaN(n)?d:Math.max(0,n);}
+
+function lpCalc(){
+  var sales   = lpGN('lp_sales',100);
+  var retail  = lpGN('lp_retail',649);
+  var pct     = parseFloat(document.getElementById('lp_pct').value)||65;
+  var comm    = lpGN('lp_comm',50);
+  var parts   = lpGN('lp_parts',35);
+  var svc     = lpGN('lp_svc',65);
+  var launch  = lpGN('lp_launch',1500);
+  var kit     = 199;
+
+  var units   = sales*(pct/100);
+  var revenue = units*retail;
+  var kitMo   = units*kit;
+  var commMo  = units*comm;
+  var partsMo = units*parts;
+  var svcMo   = units*svc;
+  var baseMo  = revenue-kitMo-commMo;
+  var totalMo = baseMo+partsMo+svcMo;
+  var annual  = totalMo*12-launch;
+  var gpu     = retail-kit-comm+parts+svc;
+  var be      = gpu>0?Math.ceil(launch/gpu):0;
+  var roi     = launch>0?Math.max(0,(annual/launch)*100):0;
+
+  document.getElementById('hero-annual').textContent  = fmt(annual);
+  document.getElementById('hero-monthly').textContent = fmt(totalMo);
+  document.getElementById('hero-be').textContent      = be+(be===1?' unit':' units');
+  document.getElementById('lp_annual').textContent    = fmt(annual);
+  document.getElementById('lp_monthly').textContent   = fmt(totalMo);
+  document.getElementById('lp_gpu').textContent       = fmt(gpu);
+  document.getElementById('lp_revenue').textContent   = fmt(revenue);
+  document.getElementById('lp_be').textContent        = be+(be===1?' unit':' units');
+  document.getElementById('lp_roi').textContent       = roi>9999?'>9,999%':Math.round(roi).toLocaleString()+'%';
+}
+
+function onSlider(el){
+  document.getElementById('lp_pct_disp').textContent = el.value+'%';
+  lpCalc();
+}
+
+lpCalc();
+window.addEventListener('load',function(){setTimeout(lpCalc,150);});
+</script>
+</body>
+</html>
