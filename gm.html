@@ -121,7 +121,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;hei
 <div class="hero">
   <div class="eyebrow" id="hero-eyebrow">Dealer Program Overview</div>
   <div class="hero-hl" id="hero-hl">The dashcam your customers are already asking <span class="red">your competitor</span> to install.</div>
-  <div class="hero-sub">Dashcams.com installs Sony&#174; 4K dashcams professionally through authorized dealerships. Dealers set their own retail price, keep the margin, and pay nothing until they order a kit.</div>
+  <div class="hero-sub">DASHCAMS.COM&#8482; delivers Video When It Counts&#174; &#8212; a state-of-the-art Ultra HD 4K DVR camera system featuring image sensing by SONY&#174;. Dealers set their own retail price, keep the margin, and give customers something they are already asking for.</div>
 </div>
 
 <!-- PROFIT HERO -->
@@ -235,7 +235,7 @@ input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;hei
 <div class="cta-sec">
   <div class="cta-hl" id="cta-hl">Ready to lock in your market?</div>
   <div class="cta-sub" id="cta-sub">One call is all it takes to get your store set up.</div>
-  <a class="call-btn" id="call-btn" href="tel:+10000000000">
+  <a class="call-btn" id="call-btn" href="tel:+14253458785">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
     Call Now
   </a>
@@ -277,7 +277,7 @@ if(P.gm && P.dealer){
 }
 
 // Eyebrow with dealer
-if(P.dealer) document.getElementById('hero-eyebrow').textContent = P.dealer+' &#8212; Dealer Program Overview';
+if(P.dealer) document.getElementById('hero-eyebrow').innerHTML = P.dealer+' &mdash; Dealer Program Overview';
 
 // Install proof
 if(P.customer && P.vehicle){
@@ -295,13 +295,18 @@ if(P.customer && P.vehicle){
 }
 
 // CTA — tap to call
-if(P.phone){
-  var clean = P.phone.replace(/[^0-9+]/g,'');
+var FALLBACK_PHONE = '+14253458785';
+var FALLBACK_NAME = 'James Harper';
+if(P.phone || true){
+  var raw = P.phone || '';
+  var clean = raw.replace(/[^0-9+]/g,'');
   if(clean && !clean.startsWith('+')) clean = '+1'+clean;
+  if(!clean) clean = FALLBACK_PHONE;
   var btn = document.getElementById('call-btn');
   btn.href = 'tel:'+clean;
   var first = P.nsd ? P.nsd.split(' ')[0] : null;
-  btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> Call '+(first||'Now');
+  var dispFirst = P.nsd ? P.nsd.split(' ')[0] : FALLBACK_NAME.split(' ')[0];
+  btn.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.01 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> Call '+dispFirst;
 }
 if(P.nsd||P.phone){
   var cc = [];
